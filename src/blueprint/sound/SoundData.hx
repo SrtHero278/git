@@ -10,7 +10,7 @@ class SoundData {
 	private static var curSounds:Array<SoundPlayer> = [];
 	private static var lastSoundUpdate:Float = 0.0;
 
-	public static function getSoundData(filePath:String):AudioFormat {
+	public static function getSoundData(filePath:String):IAudioFormat {
 		var data = switch (haxe.io.Path.extension(filePath)) {
 			case "flac": 	new FlacFormat(filePath);
 			case "mp3": 	new MP3Format(filePath);

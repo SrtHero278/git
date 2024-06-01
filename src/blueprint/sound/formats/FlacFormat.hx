@@ -6,11 +6,11 @@ import bindings.CppHelpers;
 import bindings.audio.AL;
 import bindings.audio.DrFLAC;
 
-import blueprint.sound.AudioFormat;
+import blueprint.sound.IAudioFormat;
 
 import haxe.io.Bytes;
 
-class FlacFormat implements AudioFormat {
+class FlacFormat implements IAudioFormat {
 	public var sampleRate:Int;
 	public var bufferNum:Int = BUFFER_COUNT;
 	public var buffers:cpp.RawPointer<cpp.UInt32>;
@@ -90,7 +90,11 @@ class FlacFormat implements AudioFormat {
         return data[0].totalPCMFrameCount.toInt() / sampleRate;
     }
 
+	var destroyed:Bool = false;
 	public function destroy():Void {
+		if (destroyed) return;
+
+		destroyed = true;
 		if (data != null)
 			DrFLAC.close(data);
 		AL.deleteBuffers(BUFFER_COUNT, buffers);

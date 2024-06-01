@@ -6,11 +6,11 @@ import bindings.audio.StbVorbis;
 import bindings.CppHelpers;
 import bindings.audio.AL;
 
-import blueprint.sound.AudioFormat;
+import blueprint.sound.IAudioFormat;
 
 import haxe.io.Bytes;
 
-class OggFormat implements AudioFormat {
+class OggFormat implements IAudioFormat {
 	public var sampleRate:Int;
 	public var bufferNum:Int = BUFFER_COUNT;
 	public var buffers:cpp.RawPointer<cpp.UInt32>;
@@ -88,8 +88,13 @@ class OggFormat implements AudioFormat {
 		return StbVorbis.streamLengthInSeconds(data);
 	}
 
+	var destroyed:Bool = false;
 	public function destroy() {
-		StbVorbis.close(data);
+		if (destroyed) return;
+
+		destroyed = true;
+		if (data != null)
+			StbVorbis.close(data);
 		AL.deleteBuffers(BUFFER_COUNT, buffers);
 		CppHelpers.free(buffers);
 	}

@@ -1,6 +1,10 @@
 <xml>
 	<set name="PROJECT_DIR" value="${haxelib:blueprint}/" />
 
+    <set name="VENDOR_LIB_PATH" value="${PROJECT_DIR}vendor/lib/windows" if="windows" />
+    <set name="VENDOR_LIB_PATH" value="${PROJECT_DIR}vendor/lib/mac" if="macos" />
+    <set name="VENDOR_LIB_PATH" value="${PROJECT_DIR}vendor/lib/linux" if="linux" />
+
 	<files id='haxe'>
 		<compilerflag value="-I${PROJECT_DIR}vendor/include" />
 
@@ -11,16 +15,17 @@
 		<file name="${PROJECT_DIR}vendor/src/dr_flac.c" />
 	</files>
 
-	<!-- Taken from raylib-hx -->
 	<!-- WINDOWS LINKER -->
 	<target id="haxe" tool="linker" toolid="exe" if="windows">
+		<flag value="-libpath:${PROJECT_DIR}vendor/lib/" />
+		<flag value="-libpath:${PROJECT_DIR}vendor/lib/windows/" />
+
 		<!-- <lib name="Winmm.lib" /> -->
 		<lib name="Gdi32.lib" />
 		<lib name="Shell32.lib" />
 		<lib name="OpenGL32.lib" />
 		<lib name="msvcrt.lib" />
 
-		<flag value="-libpath:${PROJECT_DIR}vendor/lib" />
 		<lib name="glfw3.lib" />
 		<lib name="freetype.lib" />
 		<lib name="libpng16_static.lib" />
@@ -29,7 +34,7 @@
 	</target>
 
 	<!-- OSX LINKER -->
-	<target id="haxe" tool="linker" if="macos">
+	<target id="haxe" tool="linker" toolid="exe" if="macos">
 		<flag value="-framework" />
 		<flag value="IOKit" />
 		<flag value="-framework" />
@@ -38,6 +43,27 @@
 		<flag value="OpenGL" />
 		<flag value="-framework" />
 		<flag value="OpenAL" />
+
+		<!-- <flag value="-libpath:${PROJECT_DIR}vendor/lib/" /> -->
+		<!-- <flag value="-libpath:${PROJECT_DIR}vendor/lib/mac64/" if="HXCPP_ARM64" />
+		<flag value="-libpath:${PROJECT_DIR}vendor/lib/mac/" unless="HXCPP_ARM64" /> -->
+
+	<!-- kinda wanna try -frameworkk again -->
+	<!-- less errors! -->
+	<!-- not set with HXCPP_STATIC_LINK -->
+	<!-- also mac needs special build instructions -->
+	<!-- i cant bother adding same libs that work with every mac version-->
+	<!-- idk why it loaded the dynamic one -->
+	<!-- honestly understandable -->
+	<!-- i hate bindings/linkings -->
+	<!-- this is why lime just uses submodules -->
+		<!-- dylib is dynamic linked libraries oh the static already has everything?-->
+		<lib name="libglfw3.a" if="HXCPP_STATIC_LINK" />
+		<lib name="libglfw.3.dylib" unless="HXCPP_STATIC_LINK"/>
+		<lib name="libpng16.a" if="HXCPP_STATIC_LINK" />
+		<lib name="libpng16.16.dylib" unless="HXCPP_STATIC_LINK"/>
+		<lib name="libfreetype.a" if="HXCPP_STATIC_LINK" />
+		<lib name="libfreetype.6.dylib" unless="HXCPP_STATIC_LINK"/>
 	</target>
 
 	<!-- LINUX LINKER -->

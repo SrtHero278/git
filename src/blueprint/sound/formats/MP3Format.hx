@@ -6,11 +6,11 @@ import bindings.CppHelpers;
 import bindings.audio.AL;
 import bindings.audio.DrMP3;
 
-import blueprint.sound.AudioFormat;
+import blueprint.sound.IAudioFormat;
 
 import haxe.io.Bytes;
 
-class MP3Format implements AudioFormat {
+class MP3Format implements IAudioFormat {
 	public var sampleRate:Int;
 	public var bufferNum:Int = BUFFER_COUNT;
 	public var buffers:cpp.RawPointer<cpp.UInt32>;
@@ -93,9 +93,14 @@ class MP3Format implements AudioFormat {
         return DrMP3.getPCMFrameCount(dataPtr).toInt() / sampleRate;
     }
 
+	var destroyed:Bool = false;
 	public function destroy():Void {
-		DrMP3.uninit(dataPtr);
+		if (destroyed) return;
+
+		if(loaded)
+			DrMP3.uninit(dataPtr);
 		AL.deleteBuffers(BUFFER_COUNT, buffers);
 		CppHelpers.free(buffers);
+		destroyed = true;
     }
 }

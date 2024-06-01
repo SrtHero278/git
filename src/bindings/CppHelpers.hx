@@ -39,3 +39,7 @@ extern class CppHelpers {
 		return untyped __cpp__('free({0})', pointer);
 	}
 }
+
+//extern class CppExtern {
+//	@:native("free") static function free<T>(pointer:T):Void;
+//}

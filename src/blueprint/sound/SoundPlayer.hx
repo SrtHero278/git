@@ -7,12 +7,12 @@ import bindings.Glfw;
 
 import math.Vector3;
 import blueprint.Game;
-import blueprint.sound.AudioFormat;
+import blueprint.sound.IAudioFormat;
 import ThreadHelper.ThreadLoopFlag;
 
 @:allow(blueprint.sound.SoundData)
 class SoundPlayer {
-	public var data(default, set):AudioFormat;
+	public var data(default, set):IAudioFormat;
 	private var source:cpp.UInt32 = 0;
 
 	public var looping:Bool;
@@ -112,7 +112,7 @@ class SoundPlayer {
 		SoundData.curSounds.remove(this);
 	}
 
-	function set_data(newData:AudioFormat) {
+	function set_data(newData:IAudioFormat) {
 		if (data != newData) {
 			if (data != null) {
 				stop();

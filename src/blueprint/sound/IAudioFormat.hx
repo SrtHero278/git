@@ -4,7 +4,7 @@ final BUFFER_COUNT:Int = 4;
 final SAMPLE_SIZE:Int = 65536;
 final SAMPLE_COUNT:Int = untyped __cpp__("{0} / sizeof(short)", SAMPLE_SIZE);
 
-interface AudioFormat {
+interface IAudioFormat {
 	public var sampleRate:Int;
 	public var bufferNum:Int;
 	public var buffers:RawPointer<cpp.UInt32>;
@@ -17,5 +17,6 @@ interface AudioFormat {
 	public function seek(seconds:Float):Void;
 	public function getLength():Float;
 
+	private var destroyed:Bool;
 	public function destroy():Void;
 }
